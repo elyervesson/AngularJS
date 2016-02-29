@@ -1,6 +1,7 @@
 <html ng-app="listaTelefonica"> 
 
 <head> 
+	<meta charset="UTF-8">
 	<title>Lista Telefonica</title> 
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
 	<style>
@@ -48,6 +49,8 @@
 			// A função push() insere no fim de um array
 			$scope.adicionarContato = function (contato) {
 				$scope.contatos.push(angular.copy(contato));
+				delete $scope.contato;
+				$scope.contatoForm.$setPristine();
 			};
 
 			// console.log($scope.contatos) mostra os contatos no console
@@ -93,27 +96,51 @@
 		<hr/> <!-- Exibe uma linha (Apenas para estetica) -->
 
 		<!-- o ng-model pega uma coisa da view e define no scope (Usado em Input, Select e Text Area) -->
-		<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome"/>
-		<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone"/>
-		
-		<!-- ng-options="operadora.codigo as operadora.nome for operadora in operadoras" mostra apenas o codigo de cada operadora-->
+		<form name="contatoForm">
+			<input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10"/>
+			<input class="form-control" type="text" ng-model="contato.telefone" name="telefone" placeholder="Telefone" ng-required="true"/>
+			
+			<!-- ng-options="operadora.codigo as operadora.nome for operadora in operadoras" mostra apenas o codigo de cada operadora-->
 
-		<!-- ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" mostra as operadoras agrupadas pela categoria -->
-		<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
-			<option value="">Selecione uma operadora</option>
-		</select>
-		
-		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
-		<button class="btn btn-danger btn-block" ng-click="removerContatos(contatos)" ng-disabled="false" ng-hide="!isContatoSelecionado(contatos)">Remover Contato</button>
+			<!-- ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" mostra as operadoras agrupadas pela categoria -->
+			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
+				<option value="">Selecione uma operadora</option>
+			</select>
+		</form>
+
+		<!-- ng-show="contatoForm.nome.$invalid -->
+		<div class="alert alert-danger" ng-show="contatoForm.nome.$error.required && contatoForm.nome.$dirty">
+			Por Favor, preencha o campo nome!
+		</div>
+		<div class="alert alert-danger" ng-show="contatoForm.nome.$error.minlength && contatoForm.nome.$dirty">
+			O campo nome deve conter no mínimo 10 caracteres.
+		</div>
+
+		<div class="alert alert-danger" ng-show="contatoForm.telefone.$invalid && contatoForm.telefone.$dirty">
+			Por Favor, preencha o campo telefone!
+		</div>
+
+
+
+		<button class="btn btn-primary btn-block" ng-disabled="contatoForm.$invalid" ng-click="adicionarContato(contato)">Adicionar Contato</button>
+		<button class="btn btn-danger btn-block" ng-click="removerContatos(contatos)" ng-hide="!isContatoSelecionado(contatos)">Remover Contato</button>
 
 		<!-- o ng-click atribue um comportamento ao evento -->
 		<!-- o ng-option renderiza as opções de um select -->
 		<!-- o ng-class e ng-style aplicam classes CSS e estilos dinamicos -->
 		<!-- o ng-show, ng-hide e ng-if exibem um elemento condicionalmente -->
-		<!-- ng-include inclue conteúdo dinamicamente -->
+		<!-- o ng-include inclue conteúdo dinamicamente -->
+		<!-- o ng-required define um determinado campo como obrigatório -->
+		<!-- o ng-minlength e ng-maxlength define o tamanho mínimo e máximo permitido -->
+		<!-- ng-pattern define uma RegExp para validar o campo -->
+
+		<!-- $valid e $invalid consulta a validade de um campo ou formulário -->
+		<!-- $pristine e $dirty verificam se um formulário ou campo já foi utilizado alguma vez -->
+		<!-- $error consulta os erros de um campo ou formulário -->
 	</div>
 
 	<!-- Importa o texto de um arquivo html -->
+	<!-- 17:42 -->
 	<div ng-include="'footer.html'"></div>
 </body> 
 	
