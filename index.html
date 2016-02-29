@@ -20,6 +20,11 @@
 		.form-control {
 			margin-bottom: 5px;
 		}
+
+		.selecionado {
+			background-color: yellow;
+		}
+
 	</style>
 	<script src="lib/angular/angular.js"></script>
 	<script>
@@ -29,19 +34,37 @@
 			// Definição de um array de contatos
 
 			$scope.contatos = [
-				{nome: "Pedro", telefone: "9999-8888"},
-				{nome: "Ana", telefone: "9999-7777"},
-				{nome: "Maria", telefone: "9999-6666"}
+				{nome: "Pedro", telefone: "9999-8888", cor: "blue"},
+				{nome: "Ana", telefone: "9999-7777", cor: "red"},
+				{nome: "Maria", telefone: "9999-6666", cor: "green"}
 			];
 			$scope.operadoras = [
-				{nome: "Oi", codigo: 14},
-				{nome: "Vivo", codigo: 15},
-				{nome: "Tim", codigo: 41}
+				{nome: "Oi", codigo: 14, categoria: "Celular"},
+				{nome: "Vivo", codigo: 15, categoria: "Celular"},
+				{nome: "Tim", codigo: 41, categoria: "Celular"},
+				{nome: "GVT", codigo: 25, categoria: "Fixo"},
+				{nome: "Embratel", codigo: 21, categoria: "Fixo"}
 			];
 			// A função push() insere no fim de um array
 			$scope.adicionarContato = function (contato) {
 				$scope.contatos.push(angular.copy(contato));
 			};
+
+			// console.log($scope.contatos) mostra os contatos no console
+			$scope.removerContatos = function (contatos) {
+				// Reatribue no array contatos aqueles contatos que não estão selecionados
+				$scope.contatos = contatos.filter(function (contato) {
+					 if (!contato.selecionado) return contato;
+				});
+			};
+
+			$scope.isContatoSelecionado = function (contatos) {
+				return contatos.some(function (contato){
+					return contato.selecionado;
+				});
+			};
+
+			$scope.classe = "selecionado";
 		});
 	</script>
 </head>
@@ -50,34 +73,48 @@
 	<div class="jumbotron">
 		<!-- OBS:podemos usar <h4 ng-bind="app"></h4>  ou <h4>{{app}}</h4> -->
 		<h3>{{app}}</h3>
-		<table class="table table-striped">
+		<table class="table" ng-show="contatos.length > 0">
 			<!-- 'th' para letras em negrito e td para letras em comum -->
 			<tr>
+				<th></th>
 				<th>Nome</th>
 				<th>Telefone</th>
+				<th>Operadora</th>
 			</tr>
-			<tr ng-repeat="contato in contatos">
+			<tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos">
+				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
 				<td>{{contato.nome}}</td>
 				<td>{{contato.telefone}}</td>
+				<td>{{contato.operadora.nome}}</td>
+				<td><div style="width: 20px; height: 20px;" ng-style="{ 'background-color': contato.cor }"></td>
 			</tr>
 		</table>
 
 		<hr/> <!-- Exibe uma linha (Apenas para estetica) -->
 
-		<!-- o ng-model pega uma coisa da view e define no scope 
-		(Usado em Input, Select e Text Area) -->
+		<!-- o ng-model pega uma coisa da view e define no scope (Usado em Input, Select e Text Area) -->
 		<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome"/>
 		<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone"/>
+		
+		<!-- ng-options="operadora.codigo as operadora.nome for operadora in operadoras" mostra apenas o codigo de cada operadora-->
+
+		<!-- ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" mostra as operadoras agrupadas pela categoria -->
 		<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
 			<option value="">Selecione uma operadora</option>
 		</select>
-		<button class="btn btn-primary btn-block" 
-		ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+		
+		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+		<button class="btn btn-danger btn-block" ng-click="removerContatos(contatos)" ng-disabled="false" ng-hide="!isContatoSelecionado(contatos)">Remover Contato</button>
 
 		<!-- o ng-click atribue um comportamento ao evento -->
-		<!-- o nnOption renderiza as opções de um select -->
+		<!-- o ng-option renderiza as opções de um select -->
+		<!-- o ng-class e ng-style aplicam classes CSS e estilos dinamicos -->
+		<!-- o ng-show, ng-hide e ng-if exibem um elemento condicionalmente -->
+		<!-- ng-include inclue conteúdo dinamicamente -->
 	</div>
 
+	<!-- Importa o texto de um arquivo html -->
+	<div ng-include="'footer.html'"></div>
 </body> 
 	
 </html>
