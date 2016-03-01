@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
 	<style>
 		.jumbotron {
-			width: 400px;
+			width: 600px;
 			text-align: center;
 
 			margin-top: 20px;
@@ -28,6 +28,7 @@
 
 	</style>
 	<script src="lib/angular/angular.js"></script>
+	<script src="lib/angular/angular-locale_pt-br.js"></script>
 	<script>
 		angular.module("listaTelefonica", []);	
 		angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope) {
@@ -35,16 +36,16 @@
 			// Definição de um array de contatos
 
 			$scope.contatos = [
-				{nome: "Pedro", telefone: "9999-8888", cor: "blue"},
-				{nome: "Ana", telefone: "9999-7777", cor: "red"},
-				{nome: "Maria", telefone: "9999-6666", cor: "green"}
+				{nome: "Pedro", telefone: "9999-8888", data: new Date(), cor: "blue"},
+				{nome: "Ana", telefone: "9999-7777", data: new Date(), cor: "red"},
+				{nome: "Maria", telefone: "9999-6666", data: new Date(), cor: "green"}
 			];
 			$scope.operadoras = [
-				{nome: "Oi", codigo: 14, categoria: "Celular"},
-				{nome: "Vivo", codigo: 15, categoria: "Celular"},
-				{nome: "Tim", codigo: 41, categoria: "Celular"},
-				{nome: "GVT", codigo: 25, categoria: "Fixo"},
-				{nome: "Embratel", codigo: 21, categoria: "Fixo"}
+				{nome: "Oi", codigo: 14, categoria: "Celular", preco: 2},
+				{nome: "Vivo", codigo: 15, categoria: "Celular", preco: 1},
+				{nome: "Tim", codigo: 41, categoria: "Celular", preco: 3},
+				{nome: "GVT", codigo: 25, categoria: "Fixo", preco: 1},
+				{nome: "Embratel", codigo: 21, categoria: "Fixo", preco: 2}
 			];
 			// A função push() insere no fim de um array
 			$scope.adicionarContato = function (contato) {
@@ -67,6 +68,11 @@
 				});
 			};
 
+			$scope.ordenarPor = function (campo) {
+				$scope.criterioDeOrdenacao = campo;
+				$scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+			};
+
 			$scope.classe = "selecionado";
 		});
 	</script>
@@ -76,19 +82,28 @@
 	<div class="jumbotron">
 		<!-- OBS:podemos usar <h4 ng-bind="app"></h4>  ou <h4>{{app}}</h4> -->
 		<h3>{{app}}</h3>
+		<input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando?"/>
+
 		<table class="table" ng-show="contatos.length > 0">
 			<!-- 'th' para letras em negrito e td para letras em comum -->
 			<tr>
 				<th></th>
-				<th>Nome</th>
-				<th>Telefone</th>
-				<th>Operadora</th>
+				<th><a href="" ng-click="ordenarPor('nome')">Nome</th>
+				<th><a href="" ng-click="ordenarPor('telefone')">Telefone</th>
+				<th><!--a href="" ng-click="ordenarPor('operadora')"-->Operadora</th>
+				<th><!--a href="" ng-click="ordenarPor('data')"-->Data</th>
 			</tr>
-			<tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos">
+			<!-- Forma antiga <tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos"> -->
+
+			<!-- ng-repeat="contato in contatos | filter:criterioDeBusca" mostra todos os contatos que tem em alguma parte do objeto contato o que esta em criterioDeBusca -->
+
+			<!-- ng-repeat="contato in contatos | filter: {nome: criterioDeBusca}" mostra todos os contatos que tem alguma parte do objeto contato.nome o que esta em criterioDeBusca -->
+			<tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos | filter: criterioDeBusca | orderBy: criterioDeOrdenacao:direcaoDaOrdenacao">
 				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
-				<td>{{contato.nome}}</td>
+				<td>{{contato.nome | uppercase | limitTo: 15}}</td> <!-- aplicando um filtro em contato.nome -->
 				<td>{{contato.telefone}}</td>
-				<td>{{contato.operadora.nome}}</td>
+				<td>{{contato.operadora.nome | lowercase}}</td>
+				<td>{{contato.data | date:'dd/MM/yyyy HH:mm'}}</td>
 				<td><div style="width: 20px; height: 20px;" ng-style="{ 'background-color': contato.cor }"></td>
 			</tr>
 		</table>
@@ -107,7 +122,7 @@
 			<!-- ng-options="operadora.codigo as operadora.nome for operadora in operadoras" mostra apenas o codigo de cada operadora-->
 
 			<!-- ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" mostra as operadoras agrupadas pela categoria -->
-			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
+			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome + ' (' + (operadora.preco | currency)+ ')' for operadora in operadoras | orderBy:'nome'">
 				<option value="">Selecione uma operadora</option>
 			</select>
 		</form>
@@ -145,9 +160,18 @@
 		<!-- $valid e $invalid consulta a validade de um campo ou formulário -->
 		<!-- $pristine e $dirty verificam se um formulário ou campo já foi utilizado alguma vez -->
 		<!-- $error consulta os erros de um campo ou formulário -->
+
+		<!-- Filtros -->
+		<!-- uppercase transforma uma String em letra maiúscula -->
+		<!-- lowercase transforma uma String em letra minúscula -->
+		<!-- date formata uma data usando uma máscara -->
+		<!-- filter filtra um array com base em um critério -->
+		<!-- orderBy ordena um array com base em um critério -->
+		<!-- currency converte um número para moeda -->
+		<!-- number formata um número EX: {{100 | number:2}} deve mostrar 100.00-->
+		<!-- limitTo limita um array ou uma string -->
 	</div>
 
-	<!-- Importa o texto de um arquivo html -->
 	<!-- 17:42 -->
 	<div ng-include="'footer.html'"></div>
 </body> 
