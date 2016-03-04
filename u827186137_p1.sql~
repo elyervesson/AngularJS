@@ -1,0 +1,169 @@
+
+-- phpMyAdmin SQL Dump
+-- version 3.5.2.2
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tempo de Geração: 02/03/2016 às 19:27:38
+-- Versão do Servidor: 10.0.22-MariaDB
+-- Versão do PHP: 5.2.17
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Banco de Dados: `u827186137_p1`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `cliente`
+--
+
+CREATE TABLE IF NOT EXISTS `cliente` (
+  `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `telefone` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
+  `endereco` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `instagram` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facebook` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_cliente`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+--
+-- Extraindo dados da tabela `cliente`
+--
+
+INSERT INTO `cliente` (`id_cliente`, `nome`, `telefone`, `endereco`, `email`, `instagram`, `facebook`) VALUES
+(1, 'Brunna Amorim', '12121212', 'aksdlashdjkashdkja', 'email@email.com', '@nbnbnbbn', 'Brunna Amorim'),
+(2, 'teste teste', '12121212', 'adfdfsdfsd', 'teste@gmail.com', '@nbnbnbbn', 'teste teste'),
+(3, 'cliente', '788578', 'sadsdfsdf', 'teste@gmail.com', 'dfgdfg', 'dfgdfg'),
+(4, 'Dara', '3332111', 'Rua tal e coisa', 'asasa@asnaiush', 'asadas', 'sdsdad'),
+(5, 'LarA', 'aasnaind', 'ASAKMSAO', 'sakdnsidni@audbaubd', 'ksadnsidn', 'nskdnisnd');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `compra`
+--
+
+CREATE TABLE IF NOT EXISTS `compra` (
+  `id_compra` int(11) NOT NULL,
+  `id_cliente` varchar(9) COLLATE utf8_unicode_ci NOT NULL,
+  `id_produto` int(11) NOT NULL DEFAULT '0',
+  `quantidade` int(11) DEFAULT NULL,
+  `data_compra` date DEFAULT NULL,
+  PRIMARY KEY (`id_cliente`,`id_compra`,`id_produto`),
+  KEY `produto_compra_fk` (`id_produto`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `desejo`
+--
+
+CREATE TABLE IF NOT EXISTS `desejo` (
+  `id_desejo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` varchar(9) COLLATE utf8_unicode_ci NOT NULL,
+  `id_produto` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `data_desejo` date NOT NULL,
+  `status` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_desejo`),
+  KEY `cliente_desejo_fk` (`id_cliente`),
+  KEY `produto_desejo_fk` (`id_produto`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `empresa`
+--
+
+CREATE TABLE IF NOT EXISTS `empresa` (
+  `id_empresa` int(11) NOT NULL AUTO_INCREMENT,
+  `cnpj` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cpf` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `endereco` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cidade` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `estado` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `telefone` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `instagram` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facebook` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `segmento_comercial` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `id_gerente` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_empresa`),
+  KEY `fk_idgerente` (`id_gerente`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `item`
+--
+
+CREATE TABLE IF NOT EXISTS `item` (
+  `id_item` int(11) NOT NULL,
+  `id_produto` int(11) NOT NULL,
+  `quantidade` int(11) DEFAULT NULL,
+  `preco` float DEFAULT NULL,
+  PRIMARY KEY (`id_item`),
+  KEY `item_fk` (`id_produto`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `produto`
+--
+
+CREATE TABLE IF NOT EXISTS `produto` (
+  `id_produto` int(11) NOT NULL AUTO_INCREMENT,
+  `cor` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `nome` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tamanho` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `quantidade` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_produto`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `usuario`
+--
+
+CREATE TABLE IF NOT EXISTS `usuario` (
+  `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `login` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `telefone` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tipo` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `senha` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE KEY `login` (`login`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
+
+--
+-- Extraindo dados da tabela `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `nome`, `login`, `telefone`, `tipo`, `senha`) VALUES
+(1, 'Dandara Dantas Navarro', 'dandaradn', '991112337', 'admin', 'admin'),
+(2, 'Brunna de Sousa Pereira Amorim', 'brunnaam', '999938921', 'admin', 'admin'),
+(4, 'Funcionario 1', 'funcion1', '1234564', 'func', '81dc9bdb52d04dc20036'),
+(5, 'Rayff Queiroga', 'rayffqueiroga', '1234655', 'admin', '1234'),
+(6, 'Isa', 'isaisa', '33372265', 'func', 'e10adc3949ba59abbe56');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

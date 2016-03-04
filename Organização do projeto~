@@ -1,0 +1,82 @@
+/ Inline Style: tudo no mesmo arquivo
+	projetos muito simples
+	protótipos
+	provas de conceito
+	hello world
+
+> app/
+	> index.html
+	> angular.js
+
+/ Stereotyoped Style: os componentes do mesmo tipo juntos
+	projeto pequeno
+	poucos componentes	
+	pouco codigo em cada componente
+	dominio unico
+
+> app/
+	> css/
+		> app.css
+	> js/
+		> app.js
+		> controllers.js
+		> directives.js
+		> filters.js
+	> lib/
+		> angular.js
+	> view/
+		> login.thml
+		> lista.html
+	> index.html
+
+/Specific Style: um arquivo para cada componente
+	projetos médios
+	muitos componentes
+	número de linhas em cada arquivo já começa a incomodar
+	domínio relativamente extenso
+
+> app/
+	> css/
+		> app.css
+	> js/
+		> controlles/
+			> loginCtrl.js
+			> listaCtrl.js
+		> directives/
+			> painelDirective.js
+			> tableDirective.js
+		> services/
+			> loginService.js
+			> listaService.js
+		> app.js
+	> lib/
+		> angular.js
+	> view/
+		> login.thml
+		> lista.html
+	> index.html
+
+/Domain Style: agrupando os arquivos por domínio
+	projetos grandes
+	utilização de módulos
+	domínio extenso
+> app/
+	> app/
+		> app.css
+		> app.js
+	> login/
+		> login.css
+		> login.html
+		> loginCtrl.js
+		> loginService.js
+	> lista/
+		> lista.css
+		> lista.html
+		> listaCtrl.js
+		> listaService.js
+	> shared/
+		> painelDirective.js
+		> tableDirective.js
+	> lib/
+		>angular.js
+	> index.html
